@@ -9,13 +9,11 @@ class Programa:
         self.app=Flask(__name__)
         self.app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///estudiantes.sqlite3"
 
-        #Agregar la db a la aplicación
         db.init_app(self.app)
 
         self. app.add_url_rule('/', view_func=self.buscarTodos)
         self. app.add_url_rule('/nuevo', view_func=self.agregar, methods=["GET", "POST"])
 
-        #Iniciar el servidor
         with self.app.app_context():
             db.create_all()
         self.app.run(debug=True)
@@ -25,18 +23,13 @@ class Programa:
         return render_template('mostrarTodos.html' , estudiantes=Estudiante.query.all())
 
     def agregar(self):
-        
-        #Verificar si debe enviar el formulario o procesar los datos
 
         if request.method=="POST":
 
-            #Crear un objeto de la clase estudiante con los valores que vienen del formulario
             nombre=request.form['nombre']
             email=request.form['email']
             codigo=request.form['codigo']
             miEstudiante=Estudiante(nombre, email, codigo)
-
-            #Guardar el objeto en db
 
             db.session.add(miEstudiante)
             db.session.commit()
